@@ -20,10 +20,10 @@ The Hedge Fund Index MVP is a proof-of-concept application that processes and vi
 - **Fund Selection**: Dropdown to analyze any fund in the dataset
 
 ### 🔍 Holdings Explorer
-- **Security Search**: Search functionality for specific securities
-- **Cross-Fund Analysis**: See which funds hold specific securities
-- **Position Values**: Detailed position sizes and share counts
-- **Fund Holdings**: Complete list of funds holding searched securities
+- **Advanced Search**: Intelligent search for securities by ticker, company name, or partial matches
+- **Cross-Fund Analysis**: See which funds hold specific securities with position sizes
+- **Fuzzy Matching**: Find securities even with partial or approximate names
+- **Fund Holdings**: Complete list of funds holding searched securities with values
 
 ### 📊 Market Insights
 - **Popular Securities**: Most widely held securities across all funds
@@ -70,13 +70,21 @@ The Hedge Fund Index MVP is a proof-of-concept application that processes and vi
    ```
 
 4. **Prepare data**
-   - Place SEC 13F data files in the `data/` directory
-   - Ensure the following files are present:
-     - `INFOTABLE.tsv`
-     - `COVERPAGE.tsv`
-     - `SUBMISSION.tsv`
-     - `SUMMARYPAGE.tsv`
-     - `FORM13F_metadata.json`
+   ```bash
+   # Run the automated setup script
+   python setup_data.py
+   ```
+   
+   This script will:
+   - Reassemble the large INFOTABLE.tsv from 4 smaller chunks
+   - Verify all required data files are present
+   - Test data loading functionality
+   
+   **Manual setup (alternative):**
+   ```bash
+   # If you prefer manual setup
+   python utils/reassemble_data.py
+   ```
 
 5. **Run the application**
    ```bash
@@ -89,6 +97,22 @@ The Hedge Fund Index MVP is a proof-of-concept application that processes and vi
 ## Data Structure
 
 The application processes SEC 13F filing data with the following key components:
+
+### Data Chunking Approach
+Due to GitHub's 100MB file size limit, the large INFOTABLE.tsv file (338MB) is split into 4 smaller chunks:
+- `INFOTABLE_chunk_1.tsv` (~85MB)
+- `INFOTABLE_chunk_2.tsv` (~85MB) 
+- `INFOTABLE_chunk_3.tsv` (~84MB)
+- `INFOTABLE_chunk_4.tsv` (~84MB)
+
+The setup script automatically reassembles these chunks into the full dataset.
+
+### Enhanced Search Engine
+The application includes an advanced search engine with:
+- **Indexed Lookups**: Pre-built indexes for fast fund and security searches
+- **Fuzzy Matching**: Intelligent partial matching for fund names and tickers
+- **Multi-key Search**: Search by company name, ticker symbol, or CUSIP
+- **Performance Optimization**: Efficient data structures for large dataset queries
 
 ### INFOTABLE.tsv
 Contains detailed holdings information:

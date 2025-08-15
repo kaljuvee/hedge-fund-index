@@ -207,9 +207,12 @@ marimo/_lsp/
 __marimo__/
 
 # Project-specific data files
-data/*.tsv
+data/INFOTABLE.tsv
 data/*.zip
 data/processed/
+
+# Keep chunks (they're under 100MB each)
+!data/chunks/
 
 # Streamlit
 .streamlit/
