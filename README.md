@@ -88,7 +88,7 @@ The Hedge Fund Index MVP is a proof-of-concept application that processes and vi
 
 5. **Run the application**
    ```bash
-   streamlit run app.py
+   streamlit run Home.py
    ```
 
 6. **Access the application**
@@ -171,11 +171,11 @@ The application provides analysis similar to professional financial platforms, i
 
 ```
 hedge-fund-index/
-├── app.py                 # Main Streamlit application
+├── Home.py                # Main Streamlit application
 ├── utils/
 │   └── data_processor.py  # SEC 13F data processing utilities
 ├── data/
-│   ├── *.tsv             # SEC 13F data files
+│   ├── chunks/           # Data chunks (under 100MB each)
 │   └── processed/        # Processed CSV exports
 ├── requirements.txt       # Python dependencies
 ├── .env                  # Environment variables (not committed)

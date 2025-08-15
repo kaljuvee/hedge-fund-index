@@ -115,9 +115,9 @@ def main():
     
     print("\n🎉 Setup completed successfully!")
     print("\nYou can now run the application with:")
-    print("  streamlit run app.py")
+    print("  streamlit run Home.py")
     print("\nOr test the search functionality:")
-    print("  python -c \"from utils.data_processor import quick_fund_search; print(quick_fund_search('vanguard'))\"")
+    print("  python -c \"from utils.data_processor import quick_fund_search; print(quick_fund_search('vanguard'))\")")
 
 if __name__ == "__main__":
     main()
