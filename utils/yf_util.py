@@ -5,15 +5,26 @@ import time
 
 try:
     from .openai_util import get_sector_with_fallback, get_ticker_with_fallback
+    from .ticker_mapping import ticker_mapping
 except ImportError:
     try:
         from openai_util import get_sector_with_fallback, get_ticker_with_fallback
+        from ticker_mapping import ticker_mapping
     except ImportError:
-        # Fallback if openai_util is not available
+        # Fallback if modules are not available
         def get_sector_with_fallback(company_name: str, ticker: Optional[str] = None, use_cache: bool = True) -> Optional[str]:
             return "Unknown"
         def get_ticker_with_fallback(company_name: str, use_cache: bool = True) -> Optional[str]:
             return None
+        # Create a dummy ticker mapping
+        class DummyTickerMapping:
+            def get_ticker(self, company_name: str) -> Optional[str]:
+                return None
+            def get_sector(self, company_name: str) -> Optional[str]:
+                return None
+            def add_mapping(self, company_name: str, ticker: str, sector: str = "Unknown", source: str = "auto"):
+                pass
+        ticker_mapping = DummyTickerMapping()
 
 def get_stock_price_change(ticker: str, period: str = "1mo") -> Optional[float]:
     """
@@ -47,7 +58,7 @@ def get_stock_price_change(ticker: str, period: str = "1mo") -> Optional[float]:
 
 def get_stock_sector(ticker: str, company_name: Optional[str] = None) -> Optional[str]:
     """
-    Get the sector information for a given stock ticker with OpenAI fallback.
+    Get the sector information for a given stock ticker with CSV mapping and OpenAI fallback.
     
     Args:
         ticker (str): Stock ticker symbol
@@ -56,6 +67,12 @@ def get_stock_sector(ticker: str, company_name: Optional[str] = None) -> Optiona
     Returns:
         Optional[str]: Sector name, or None if error
     """
+    # 1. First, check CSV mapping if company name is provided
+    if company_name:
+        csv_sector = ticker_mapping.get_sector(company_name)
+        if csv_sector and csv_sector != "Unknown":
+            return csv_sector
+    
     try:
         stock = yf.Ticker(ticker)
         info = stock.info
@@ -72,6 +89,9 @@ def get_stock_sector(ticker: str, company_name: Optional[str] = None) -> Optiona
         sector = info.get('sector') or info.get('industry') or info.get('category')
         
         if sector and sector != "Unknown":
+            # Add to CSV mapping for future use
+            if company_name:
+                ticker_mapping.add_mapping(company_name, ticker, sector, source="yfinance")
             return sector
         
         # If Yahoo Finance doesn't provide sector, try OpenAI fallback
@@ -79,6 +99,8 @@ def get_stock_sector(ticker: str, company_name: Optional[str] = None) -> Optiona
             print(f"Yahoo Finance couldn't find sector for {ticker}, trying OpenAI fallback...")
             openai_sector = get_sector_with_fallback(company_name, ticker)
             if openai_sector and openai_sector != "Unknown":
+                # Add to CSV mapping for future use
+                ticker_mapping.add_mapping(company_name, ticker, openai_sector, source="openai")
                 return openai_sector
         
         return "Unknown"
@@ -95,6 +117,8 @@ def get_stock_sector(ticker: str, company_name: Optional[str] = None) -> Optiona
             print(f"Trying OpenAI fallback for {ticker}...")
             openai_sector = get_sector_with_fallback(company_name, ticker)
             if openai_sector and openai_sector != "Unknown":
+                # Add to CSV mapping for future use
+                ticker_mapping.add_mapping(company_name, ticker, openai_sector, source="openai")
                 return openai_sector
         
         return "Unknown"
@@ -143,7 +167,7 @@ def get_stock_info_batch(tickers: list, company_names: Dict[str, str] = None, pe
 
 def extract_ticker_from_cusip(cusip: str) -> Optional[str]:
     """
-    Extract ticker symbol from CUSIP or company name with OpenAI fallback.
+    Extract ticker symbol from CUSIP or company name with CSV mapping and OpenAI fallback.
     
     Args:
         cusip (str): CUSIP or company name
@@ -151,14 +175,16 @@ def extract_ticker_from_cusip(cusip: str) -> Optional[str]:
     Returns:
         Optional[str]: Ticker symbol if found
     """
-    # This is a simplified mapping - you might want to use a proper CUSIP to ticker database
-    # For now, we'll try to extract common patterns
-    
     # Remove common suffixes and clean up
     clean_name = str(cusip).upper().strip()
     
-    # Common patterns for major companies
-    ticker_mapping = {
+    # 1. First, check CSV mapping
+    csv_ticker = ticker_mapping.get_ticker(clean_name)
+    if csv_ticker:
+        return csv_ticker
+    
+    # 2. Check local hardcoded mapping (legacy fallback)
+    local_mapping = {
         'APPLE': 'AAPL',
         'MICROSOFT': 'MSFT',
         'ALPHABET': 'GOOGL',
@@ -192,16 +218,18 @@ def extract_ticker_from_cusip(cusip: str) -> Optional[str]:
         'HCA HEALTHCARE': 'HCA'
     }
     
-    # Check for exact matches first
-    for company, ticker in ticker_mapping.items():
+    # Check for exact matches in local mapping
+    for company, ticker in local_mapping.items():
         if company in clean_name:
             return ticker
     
-    # If no match found, try OpenAI fallback
+    # 3. If no match found, try OpenAI fallback
     try:
         openai_ticker = get_ticker_with_fallback(str(cusip))
         if openai_ticker:
             print(f"OpenAI found ticker for {cusip}: {openai_ticker}")
+            # Add to CSV mapping for future use
+            ticker_mapping.add_mapping(clean_name, openai_ticker, source="openai")
             return openai_ticker
     except Exception as e:
         print(f"OpenAI ticker extraction failed for {cusip}: {e}")

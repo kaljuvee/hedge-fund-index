@@ -1,0 +1,61 @@
+company_name,ticker,sector,source,last_updated
+APPLE INC,AAPL,Technology,manual,2024-01-01
+MICROSOFT CORP,MSFT,Technology,manual,2024-01-01
+ALPHABET INC,GOOGL,Communication Services,manual,2024-01-01
+AMAZON.COM INC,AMZN,Consumer Cyclical,manual,2024-01-01
+TESLA INC,TSLA,Consumer Cyclical,manual,2024-01-01
+BERKSHIRE HATHAWAY INC,BRK.A,Financial Services,manual,2024-01-01
+JPMORGAN CHASE & CO,JPM,Financial Services,manual,2024-01-01
+BANK OF AMERICA CORP,BAC,Financial Services,manual,2024-01-01
+WELLS FARGO & CO,WFC,Financial Services,manual,2024-01-01
+UNITEDHEALTH GROUP INC,UNH,Healthcare,manual,2024-01-01
+JOHNSON & JOHNSON,JNJ,Healthcare,manual,2024-01-01
+PROCTER & GAMBLE CO,PG,Consumer Defensive,manual,2024-01-01
+VISA INC,V,Financial Services,manual,2024-01-01
+MASTERCARD INC,MA,Financial Services,manual,2024-01-01
+NVIDIA CORP,NVDA,Technology,manual,2024-01-01
+META PLATFORMS INC,META,Communication Services,manual,2024-01-01
+NETFLIX INC,NFLX,Communication Services,manual,2024-01-01
+SALESFORCE INC,CRM,Technology,manual,2024-01-01
+ORACLE CORP,ORCL,Technology,manual,2024-01-01
+CISCO SYSTEMS INC,CSCO,Technology,manual,2024-01-01
+HESS CORP,HES,Energy,manual,2024-01-01
+ADVANCED MICRO DEVICES INC,AMD,Technology,manual,2024-01-01
+BRIDGEBIO PHARMA INC,BBIO,Healthcare,manual,2024-01-01
+MARVELL TECHNOLOGY INC,MRVL,Technology,manual,2024-01-01
+DISCOVER FINL SVCS,DFS,Financial Services,manual,2024-01-01
+ANSYS INC,ANSS,Technology,manual,2024-01-01
+SHELL PLC,SHEL,Energy,manual,2024-01-01
+GOLDMAN SACHS GROUP INC,GS,Financial Services,manual,2024-01-01
+UNITED STATES STL CORP NEW,X,Basic Materials,manual,2024-01-01
+ALLSTATE CORP,ALL,Financial Services,manual,2024-01-01
+HCA HEALTHCARE INC,HCA,Healthcare,manual,2024-01-01
+ISHARES TR,IEMG,ETF,manual,2024-01-01
+SPDR S&P 500 ETF TRUST,SPY,ETF,manual,2024-01-01
+VANGUARD TOTAL STOCK MARKET ETF,VTI,ETF,manual,2024-01-01
+INVESCO QQQ TRUST,QQQ,ETF,manual,2024-01-01
+DOORDASH INC,DASH,Consumer Cyclical,yfinance,2025-08-15
+SAMSARA INC,SAMA,Technology,openai,2025-08-15
+REVOLUTION MEDICINES INC,RVMD,Healthcare,yfinance,2025-08-15
+BLOCK INC,SQ,Technology,openai,2025-08-15
+ACCOLADE INC,ACCD,Healthcare,openai,2025-08-15
+MAZE THERAPEUTICS INC,MZTX,Healthcare,openai,2025-08-15
+NAUTILUS BIOTECHNOLOGY INC,NAUT,Healthcare,yfinance,2025-08-15
+BIOAGE LABS INC,AGEX,Healthcare,openai,2025-08-15
+CAMP4 THERAPEUTICS CORP,CPAA,Healthcare,openai,2025-08-15
+OPENDOOR TECHNOLOGIES INC,OPEN,Real Estate,yfinance,2025-08-15
+ERASCA INC,ERAS,Healthcare,yfinance,2025-08-15
+GINKGO BIOWORKS HOLDINGS INC,DNA,Healthcare,yfinance,2025-08-15
+CYNGN INC,CYNGN,Technology,openai,2025-08-15
+INTEL CORP,INTC,Technology,yfinance,2025-08-15
+BROADCOM INC,AVGO,Technology,yfinance,2025-08-15
+ONTO INNOVATION INC,ONTO,Technology,yfinance,2025-08-15
+VISTRA CORP,VST,Utilities,yfinance,2025-08-15
+MODINE MFG CO,MODN,Industrials,openai,2025-08-15
+EQT CORP,EQT,Energy,yfinance,2025-08-15
+COREWEAVE INC,CWV,Technology,openai,2025-08-15
+CONSTELLATION ENERGY CORP,CEG,Utilities,yfinance,2025-08-15
+CORE SCIENTIFIC INC NEW,CSCW,Technology,openai,2025-08-15
+TALEN ENERGY CORP,TLN,Utilities,yfinance,2025-08-15
+APPLIED DIGITAL CORP,APDN,Healthcare,yfinance,2025-08-15
+IREN LIMITED,IREN,Financial Services,yfinance,2025-08-15

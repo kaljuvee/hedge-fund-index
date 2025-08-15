@@ -48,6 +48,11 @@ def create_heatmap(holdings_df, fund_name=None):
         # Extract tickers from company names
         top_holdings['ticker'] = top_holdings['NAMEOFISSUER'].apply(extract_ticker_from_cusip)
         
+        # Show ticker discovery progress
+        total_companies = len(top_holdings)
+        found_tickers = len([t for t in top_holdings['ticker'] if t])
+        st.info(f"📊 Ticker Discovery: {found_tickers}/{total_companies} companies have ticker symbols")
+        
         # Get stock information for available tickers
         available_tickers = [ticker for ticker in top_holdings['ticker'] if ticker]
         
@@ -55,7 +60,7 @@ def create_heatmap(holdings_df, fund_name=None):
             # Create mapping of tickers to company names
             ticker_to_company = dict(zip(top_holdings['ticker'], top_holdings['NAMEOFISSUER']))
             
-            with st.spinner("Fetching stock price changes and sector data..."):
+            with st.spinner(f"Fetching stock price changes and sector data for {len(available_tickers)} companies..."):
                 stock_info = get_stock_info_batch(available_tickers, ticker_to_company)
             
             # Add stock information to holdings
@@ -358,6 +363,34 @@ def main():
                                 st.metric("Negative Movers", f"{total_count-positive_count}/{total_count} ({(total_count-positive_count)/total_count*100:.1f}%)")
                             else:
                                 st.info("No price change data available")
+                
+                # Show mapping statistics
+                try:
+                    from utils.ticker_mapping import ticker_mapping
+                    stats = ticker_mapping.get_stats()
+                    
+                    with st.expander("📈 Ticker Mapping Statistics", expanded=False):
+                        col1, col2, col3 = st.columns(3)
+                        with col1:
+                            st.metric("Total Mappings", stats['total'])
+                        with col2:
+                            st.metric("Sectors Covered", len(stats['sectors']))
+                        with col3:
+                            st.metric("Data Sources", len(stats['sources']))
+                        
+                        # Show sector breakdown
+                        if stats['sectors']:
+                            st.write("**Sector Distribution:**")
+                            sector_df = pd.DataFrame(list(stats['sectors'].items()), columns=['Sector', 'Count'])
+                            st.dataframe(sector_df.sort_values('Count', ascending=False), use_container_width=True)
+                        
+                        # Show source breakdown
+                        if stats['sources']:
+                            st.write("**Data Sources:**")
+                            source_df = pd.DataFrame(list(stats['sources'].items()), columns=['Source', 'Count'])
+                            st.dataframe(source_df.sort_values('Count', ascending=False), use_container_width=True)
+                except Exception as e:
+                    st.warning(f"Could not load mapping statistics: {e}")
                 
                 # Portfolio heatmap
                 st.subheader("🗺️ Portfolio Heatmap by Sector")
