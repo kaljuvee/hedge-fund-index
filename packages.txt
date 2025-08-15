@@ -1,3 +1,0 @@
-# System packages needed for the application
-python3-dev
-build-essential
