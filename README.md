@@ -54,6 +54,8 @@ The Hedge Fund Index MVP is a proof-of-concept application that processes and vi
 
 ### Setup Instructions
 
+### Local Development Setup
+
 1. **Clone the repository**
    ```bash
    git clone https://github.com/kaljuvee/hedge-fund-index.git
