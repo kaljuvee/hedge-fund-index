@@ -25,18 +25,18 @@ class HedgeFundSearchEngine:
             
         print("Loading and indexing data for search...")
         
-        # Load data files
-        try:
-            self.infotable_df = pd.read_csv(
-                os.path.join(self.data_dir, 'INFOTABLE.tsv'), 
-                sep='\t', 
-                low_memory=False
-            )
-            self.coverpage_df = pd.read_csv(
-                os.path.join(self.data_dir, 'COVERPAGE.tsv'), 
-                sep='\t'
-            )
-        except FileNotFoundError:
+        # Load coverpage data first (always needed)
+        coverpage_path = os.path.join(self.data_dir, 'COVERPAGE.tsv')
+        if os.path.exists(coverpage_path):
+            self.coverpage_df = pd.read_csv(coverpage_path, sep='\t')
+        else:
+            raise FileNotFoundError(f"COVERPAGE.tsv not found in {self.data_dir}")
+        
+        # Load infotable data
+        infotable_path = os.path.join(self.data_dir, 'INFOTABLE.tsv')
+        if os.path.exists(infotable_path):
+            self.infotable_df = pd.read_csv(infotable_path, sep='\t', low_memory=False)
+        else:
             # Try to load from chunks if main file doesn't exist
             self._load_from_chunks()
         
@@ -72,6 +72,12 @@ class HedgeFundSearchEngine:
         for _, row in self.coverpage_df.iterrows():
             fund_name = row['FILINGMANAGER_NAME']
             accession = row['ACCESSION_NUMBER']
+            
+            # Skip if fund_name is null or empty
+            if pd.isna(fund_name) or not str(fund_name).strip():
+                continue
+                
+            fund_name = str(fund_name).strip()
             
             # Create multiple search keys
             keys = [
