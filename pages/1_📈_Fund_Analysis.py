@@ -5,6 +5,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+import numpy as np
 import sys
 sys.path.append('utils')
 
@@ -27,25 +28,60 @@ def load_data():
     return st.session_state.processor
 
 def create_heatmap(holdings_data):
-    """Create portfolio heatmap visualization"""
+    """Create portfolio heatmap visualization using treemap"""
     if holdings_data.empty:
         return None
     
-    # Prepare data for treemap
-    holdings_data = holdings_data.head(30)  # Top 30 for better visualization
-    holdings_data['portfolio_pct'] = (holdings_data['VALUE'] / holdings_data['VALUE'].sum()) * 100
+    # Prepare data for treemap - use top 20 for better visualization
+    holdings_data = holdings_data.head(20).copy()
     
+    # Calculate portfolio percentage for sizing
+    total_value = holdings_data['VALUE'].sum()
+    holdings_data['portfolio_pct'] = (holdings_data['VALUE'] / total_value) * 100
+    
+    # Generate random colors from red to green spectrum
+    np.random.seed(42)  # For consistent colors
+    n_holdings = len(holdings_data)
+    # Generate random values between 0 (red) and 1 (green) for color mapping
+    random_colors = np.random.uniform(0, 1, n_holdings)
+    holdings_data['color_value'] = random_colors
+    
+    # Create treemap
     fig = px.treemap(
         holdings_data,
-        values='VALUE',
+        values='portfolio_pct',  # Use percentage for rectangle size
         names='NAMEOFISSUER',
-        title="Portfolio Holdings Heatmap (Top 30)",
-        color='portfolio_pct',
-        color_continuous_scale='RdYlBu_r',
-        hover_data={'VALUE': ':,.0f', 'portfolio_pct': ':.2f'}
+        title="Portfolio Holdings Heatmap (Top 20)",
+        color='color_value',  # Use random values for coloring
+        color_continuous_scale='RdYlGn',  # Red to Yellow to Green
+        hover_data={
+            'VALUE': ':$,.0f', 
+            'portfolio_pct': ':.2f%',
+            'SSHPRNAMT': ':,.0f'
+        },
+        labels={
+            'portfolio_pct': 'Portfolio %',
+            'VALUE': 'Value ($)',
+            'SSHPRNAMT': 'Shares'
+        }
     )
     
-    fig.update_layout(height=500)
+    # Update layout for better appearance
+    fig.update_layout(
+        height=600,
+        font_size=12,
+        title_font_size=16,
+        coloraxis_showscale=False  # Hide color scale since colors are random
+    )
+    
+    # Update traces for better text display
+    fig.update_traces(
+        textinfo="label+value",
+        texttemplate="<b>%{label}</b><br>%{value:.1f}%",
+        textfont_size=10,
+        textposition="middle center"
+    )
+    
     return fig
 
 def main():
