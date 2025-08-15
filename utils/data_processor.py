@@ -7,7 +7,15 @@ import os
 import json
 import glob
 from typing import Dict, List, Tuple
-from .search_utils import HedgeFundSearchEngine
+
+# Import search utils with fallback
+try:
+    from .search_utils import HedgeFundSearchEngine
+except ImportError:
+    try:
+        from utils.search_utils import HedgeFundSearchEngine
+    except ImportError:
+        from search_utils import HedgeFundSearchEngine
 
 class SEC13FProcessor:
     """Process SEC 13F filing data with enhanced search capabilities"""
@@ -223,7 +231,13 @@ class SEC13FProcessor:
         
         if not os.path.exists(infotable_path) and os.path.exists(chunks_dir):
             print("Setting up INFOTABLE.tsv from chunks...")
-            from .reassemble_data import reassemble_infotable
+            try:
+                from .reassemble_data import reassemble_infotable
+            except ImportError:
+                try:
+                    from utils.reassemble_data import reassemble_infotable
+                except ImportError:
+                    from reassemble_data import reassemble_infotable
             reassemble_infotable(chunks_dir, infotable_path)
             print("INFOTABLE.tsv created successfully!")
 

@@ -17,7 +17,11 @@ load_dotenv()
 # Import custom utilities
 import sys
 sys.path.append('utils')
-from data_processor import SEC13FProcessor
+try:
+    from utils.data_processor import SEC13FProcessor
+except ImportError:
+    # Fallback for different import paths
+    from data_processor import SEC13FProcessor
 
 # Page configuration
 st.set_page_config(
