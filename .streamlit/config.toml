@@ -1,0 +1,26 @@
+[server]
+# Disable file watching to avoid inotify limits
+fileWatcherType = "none"
+
+# Optimize for deployment
+headless = true
+enableCORS = false
+enableXsrfProtection = false
+
+# Increase timeout for large data processing
+maxUploadSize = 200
+
+[client]
+# Disable caching issues
+caching = false
+
+[browser]
+# Disable browser opening on startup
+gatherUsageStats = false
+
+[theme]
+# Use a clean theme
+primaryColor = "#FF6B6B"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F0F2F6"
+textColor = "#262730"

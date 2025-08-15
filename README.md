@@ -98,6 +98,19 @@ The Hedge Fund Index MVP is a proof-of-concept application that processes and vi
 6. **Access the application**
    - Open your browser to `http://localhost:8501`
 
+### Streamlit Cloud Deployment
+
+1. **Fork or upload** the repository to GitHub
+2. **Connect to Streamlit Cloud** at https://share.streamlit.io/
+3. **Set environment variables** in the Streamlit Cloud dashboard:
+   - `OPENAI_API_KEY`: Your OpenAI API key for sector classification
+4. **Deploy** - Streamlit Cloud will automatically detect the app and deploy it
+
+**Note**: The app is configured to work on Streamlit Cloud with:
+- File watching disabled to avoid inotify limits
+- Optimized settings for cloud deployment
+- Proper error handling for large datasets
+
 ## Data Structure
 
 The application processes SEC 13F filing data with the following key components:

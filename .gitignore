@@ -215,7 +215,7 @@ data/processed/
 !data/chunks/
 
 # Streamlit
-.streamlit/
+# .streamlit/  # Commented out to allow config.toml to be committed
 
 # Sample documents
 *.pdf
