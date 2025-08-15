@@ -148,12 +148,112 @@ class SEC13FProcessor:
         
         return top_funds[['FILINGMANAGER_NAME', 'portfolio_value', 'total_positions']]
     
+    def get_fund_list(self) -> pd.DataFrame:
+        """Get list of all funds in the dataset (legacy compatibility method)"""
+        if self.infotable_df is None:
+            self.load_data()
+        
+        # Calculate portfolio values by fund
+        fund_portfolios = self.infotable_df.groupby('ACCESSION_NUMBER').agg({
+            'VALUE': 'sum',
+            'NAMEOFISSUER': 'count'
+        }).reset_index()
+        
+        fund_portfolios.columns = ['ACCESSION_NUMBER', 'TABLEVALUETOTAL', 'TABLEENTRYTOTAL']
+        
+        # Merge with fund names
+        funds = self.coverpage_df[['FILINGMANAGER_NAME', 'ACCESSION_NUMBER']].merge(
+            fund_portfolios, 
+            on='ACCESSION_NUMBER'
+        )
+        
+        # Sort by portfolio value
+        funds = funds.sort_values('TABLEVALUETOTAL', ascending=False, na_position='last')
+        
+        return funds
+    
+    def get_fund_summary(self, fund_name: str = None) -> Dict:
+        """Get summary statistics for a specific fund or all funds (legacy compatibility method)"""
+        if self.infotable_df is None:
+            self.load_data()
+        
+        if fund_name:
+            # Filter for specific fund
+            fund_data = self.coverpage_df[
+                self.coverpage_df['FILINGMANAGER_NAME'].str.contains(fund_name, case=False, na=False)
+            ]
+            if fund_data.empty:
+                return {"error": f"Fund '{fund_name}' not found"}
+                
+            accession_numbers = fund_data['ACCESSION_NUMBER'].tolist()
+            holdings = self.infotable_df[
+                self.infotable_df['ACCESSION_NUMBER'].isin(accession_numbers)
+            ]
+        else:
+            holdings = self.infotable_df
+            
+        # Calculate summary statistics
+        total_value = holdings['VALUE'].sum()
+        total_positions = len(holdings)
+        unique_securities = holdings['NAMEOFISSUER'].nunique()
+        
+        return {
+            'total_portfolio_value': total_value,
+            'total_positions': total_positions,
+            'unique_securities': unique_securities,
+            'holdings_data': holdings
+        }
+    
     def get_fund_holdings(self, fund_name: str, top_n: int = 50) -> pd.DataFrame:
         """Get holdings for a specific fund using enhanced search"""
         if self.search_engine is None:
             self.load_data()
         
         return self.search_engine.get_fund_holdings(fund_name, top_n)
+    
+    def get_top_holdings(self, fund_name: str = None, top_n: int = 100) -> pd.DataFrame:
+        """Get top holdings for a fund (legacy compatibility method)"""
+        if fund_name:
+            return self.get_fund_holdings(fund_name, top_n)
+        else:
+            # Return top holdings across all funds
+            if self.infotable_df is None:
+                self.load_data()
+            
+            # Group by security and sum values
+            top_holdings = self.infotable_df.groupby(['NAMEOFISSUER', 'TITLEOFCLASS']).agg({
+                'VALUE': 'sum',
+                'SSHPRNAMT': 'sum',
+                'PUTCALL': 'first',
+                'CUSIP': 'first'
+            }).reset_index()
+            
+            # Calculate portfolio percentage
+            total_value = self.infotable_df['VALUE'].sum()
+            top_holdings['portfolio_pct'] = (top_holdings['VALUE'] / total_value) * 100
+            
+            # Sort by value and get top N
+            top_holdings = top_holdings.sort_values('VALUE', ascending=False).head(top_n)
+            
+            return top_holdings
+    
+    def create_heatmap_data(self, fund_name: str = None) -> pd.DataFrame:
+        """Create data for portfolio heatmap visualization (legacy compatibility method)"""
+        top_holdings = self.get_top_holdings(fund_name, top_n=50)
+        
+        if top_holdings.empty:
+            return pd.DataFrame()
+            
+        # Create heatmap data with security symbols (simplified)
+        heatmap_data = top_holdings.copy()
+        heatmap_data['symbol'] = heatmap_data['NAMEOFISSUER'].str.extract(r'([A-Z]{2,5})')
+        heatmap_data['size'] = heatmap_data.get('portfolio_pct', heatmap_data['VALUE'] / heatmap_data['VALUE'].sum() * 100)
+        
+        return heatmap_data[['symbol', 'NAMEOFISSUER', 'VALUE', 'size']].head(30)
+    
+    def export_to_csv(self, output_dir: str):
+        """Export processed data to CSV files (legacy compatibility method)"""
+        self.export_processed_data(output_dir)
     
     def search_securities(self, query: str) -> pd.DataFrame:
         """Search for securities by name using enhanced search"""
