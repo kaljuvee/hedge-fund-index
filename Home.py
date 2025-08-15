@@ -6,6 +6,11 @@ import pandas as pd
 import os
 from dotenv import load_dotenv
 
+# Disable file watching to prevent inotify issues on Streamlit Cloud
+import os
+os.environ['STREAMLIT_SERVER_FILE_WATCHER_TYPE'] = 'none'
+os.environ['STREAMLIT_SERVER_RUN_ON_SAVE'] = 'false'
+
 # Load environment variables
 load_dotenv()
 

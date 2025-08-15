@@ -10,6 +10,10 @@ enableXsrfProtection = false
 # Increase timeout for large data processing
 maxUploadSize = 200
 
+# Additional settings to prevent inotify issues
+runOnSave = false
+port = 8501
+
 [client]
 # Disable caching issues
 caching = false
