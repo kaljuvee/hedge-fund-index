@@ -68,6 +68,74 @@ def get_fund_concentration(processor, top_n=20):
 def main():
     st.title("📊 Market Insights")
     
+    # Documentation and Help Section
+    with st.expander("📖 How to Use This Page", expanded=False):
+        st.markdown("""
+        ## 🎯 Purpose
+        Get a bird's-eye view of the entire hedge fund market, including most popular securities, fund concentration, and market trends.
+        
+        ## 🔍 How to Use
+        
+        ### 1. **Market Overview Metrics**
+        - **Total Funds**: Number of hedge funds in the dataset
+        - **Total Holdings**: Total number of individual positions
+        - **Total AUM**: Combined assets under management
+        - **Unique Securities**: Number of different companies held
+        
+        ### 2. **Most Popular Securities** 🔥
+        This table shows the most widely held securities across all funds:
+        - **Security**: Company name and security type
+        - **Total Value**: Combined value across all funds
+        - **Total Shares**: Total shares held across all funds
+        - **Fund Count**: Number of funds holding this security
+        
+        ### 3. **Top Securities Chart** 📈
+        - Horizontal bar chart showing the most valuable holdings
+        - Larger bars = higher total value across all funds
+        - Helps identify "crowded trades" and popular investments
+        
+        ### 4. **Fund Concentration** 🏛️
+        Shows the largest hedge funds by portfolio value:
+        - **Fund Name**: Hedge fund manager
+        - **Portfolio Value**: Total value of all holdings
+        - **Total Positions**: Number of individual securities
+        
+        ### 5. **Market Share Distribution** 🥧
+        - Pie chart showing concentration of assets among top funds
+        - Larger slices = higher market share
+        - Helps identify market concentration risk
+        
+        ### 6. **Market Statistics** 📈
+        - **Security Distribution**: Types of securities held (stocks, bonds, etc.)
+        - **Value Distribution**: Statistical summary of position sizes
+        
+        ## 💡 Interpretation Tips
+        
+        ### **Popular Securities Analysis:**
+        - **High Fund Count** = Crowded trade (many funds own it)
+        - **High Total Value** = Significant institutional interest
+        - **Risk**: If many funds own the same stocks, they might sell together
+        
+        ### **Fund Concentration Analysis:**
+        - **Large Funds** = Market movers (their trades can impact prices)
+        - **High Concentration** = Few funds control most assets
+        - **Diversification** = More funds = more diverse strategies
+        
+        ### **Market Trends:**
+        - **Technology Heavy** = Growth-focused market
+        - **Financial Heavy** = Value-focused market
+        - **Concentrated** = Higher systemic risk
+        
+        ## ⚠️ Important Notes
+        
+        - Data represents a snapshot of hedge fund holdings
+        - Large positions may have been reduced since filing
+        - Popular securities may be overvalued due to crowding
+        - Fund concentration indicates market power distribution
+        """)
+    
+    # Load data
+    
     # Load data
     processor = load_data()
     

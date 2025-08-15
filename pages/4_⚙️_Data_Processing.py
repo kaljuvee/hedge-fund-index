@@ -28,6 +28,85 @@ def load_data():
 def main():
     st.title("⚙️ Data Processing")
     
+    # Documentation and Help Section
+    with st.expander("📖 How to Use This Page", expanded=False):
+        st.markdown("""
+        ## 🎯 Purpose
+        Monitor data quality, export datasets, and manage the SEC 13F filing data used throughout the application.
+        
+        ## 🔍 How to Use
+        
+        ### 1. **Data Overview** 📋
+        - **Holdings Data**: Information about individual fund positions
+        - **Fund Data**: Information about hedge fund managers
+        - **Memory Usage**: How much space the data occupies
+        
+        ### 2. **Data Quality Checks** 🔍
+        - **Missing Values**: Identifies incomplete data fields
+        - **Data Completeness**: Percentage of missing data
+        - **Key Fields**: Critical fields like company names, values, and shares
+        
+        ### 3. **Data Samples** 📊
+        - **Holdings Sample**: See actual fund position data
+        - **Fund Sample**: See fund manager information
+        - **Field Definitions**: Understand what each column represents
+        
+        ### 4. **Export Options** 💾
+        - **Holdings Export**: Download all fund positions as CSV
+        - **Funds Export**: Download fund manager data as CSV
+        - **Summary Report**: Download aggregated statistics
+        
+        ### 5. **File Information** 📁
+        - **File Sizes**: How much space each data file uses
+        - **File Types**: TSV, CSV, and JSON formats
+        - **Data Sources**: Original SEC filing data
+        
+        ### 6. **Data Management** 🔄
+        - **Refresh Data**: Reload data from source files
+        - **Clear Cache**: Remove cached data to free memory
+        
+        ## 📊 Understanding the Data
+        
+        ### **Holdings Data (INFOTABLE.tsv):**
+        - **NAMEOFISSUER**: Company name
+        - **VALUE**: Position value in dollars
+        - **SSHPRNAMT**: Number of shares held
+        - **TITLEOFCLASS**: Type of security
+        - **CUSIP**: Unique security identifier
+        - **ACCESSION_NUMBER**: Links to fund information
+        
+        ### **Fund Data (COVERPAGE.tsv):**
+        - **FILINGMANAGER_NAME**: Hedge fund name
+        - **ACCESSION_NUMBER**: Unique filing identifier
+        - **TABLEVALUETOTAL**: Total portfolio value
+        - **TABLEENTRYTOTAL**: Total number of positions
+        
+        ## 💡 Data Quality Tips
+        
+        - **Low Missing Values** = High quality data
+        - **Consistent Formats** = Reliable analysis
+        - **Large File Sizes** = Comprehensive coverage
+        - **Recent Data** = Current market conditions
+        
+        ## ⚠️ Important Notes
+        
+        - Data comes from SEC 13F quarterly filings
+        - Filings are typically 45 days after quarter end
+        - Large positions may be reported differently
+        - Some funds may not file if below threshold
+        - Data represents end-of-quarter snapshots
+        
+        ## 🔧 Troubleshooting
+        
+        **If data seems incomplete:**
+        - Check file sizes in File Information
+        - Look for missing values in Data Quality
+        - Try refreshing data
+        - Clear cache if memory issues occur
+        """)
+    
+    # Load data
+    
     # Load data
     processor = load_data()
     

@@ -72,6 +72,57 @@ def search_securities(processor, query):
 def main():
     st.title("🔍 Holdings Explorer")
     
+    # Documentation and Help Section
+    with st.expander("📖 How to Use This Page", expanded=False):
+        st.markdown("""
+        ## 🎯 Purpose
+        Search and analyze specific securities across all hedge fund holdings to understand which funds are investing in particular companies.
+        
+        ## 🔍 How to Use
+        
+        ### 1. **Search for Securities**
+        - Enter a company name or ticker symbol in the search box
+        - Use partial names (e.g., "NVIDIA" or "Apple")
+        - Search is case-insensitive and matches partial text
+        
+        ### 2. **Interpret Search Results**
+        
+        **Security Summary Table:**
+        - **Security**: Company name and security type
+        - **Total Value**: Combined value across all funds
+        - **Total Shares**: Total shares held across all funds
+        - **Fund Count**: Number of funds holding this security
+        
+        **Fund Holdings Table:**
+        - **Fund Name**: Hedge fund manager name
+        - **Position Value**: Value of this fund's position
+        - **Shares Held**: Number of shares held by this fund
+        
+        ### 3. **Summary Metrics**
+        - **Funds Holding**: Total number of funds with positions
+        - **Total Position Value**: Combined value across all funds
+        - **Average Position**: Average position size per fund
+        
+        ## 💡 Search Tips
+        
+        - **Company Names**: Try variations like "APPLE", "Apple Inc", "APPLE INC"
+        - **Ticker Symbols**: Use official tickers like "AAPL", "MSFT", "GOOGL"
+        - **Partial Matches**: Search for "NVIDIA" to find "NVIDIA CORP"
+        - **Case Insensitive**: "tesla" will find "TESLA INC"
+        
+        ## 📊 What the Data Tells You
+        
+        - **High Fund Count** = Popular investment among hedge funds
+        - **Large Total Value** = Significant institutional interest
+        - **High Average Position** = Funds are making large bets
+        - **Concentration Risk**: If few funds hold most of the value
+        
+        ## 🔍 Example Searches
+        Try these popular companies to see how they're distributed across funds:
+        """)
+    
+    # Load data
+    
     # Load data
     processor = load_data()
     
