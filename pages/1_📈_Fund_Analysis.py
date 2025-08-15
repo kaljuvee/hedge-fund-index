@@ -30,7 +30,7 @@ def load_data():
         st.error(f"Error loading data: {str(e)}")
         return None
 
-def create_heatmap(holdings_df):
+def create_heatmap(holdings_df, fund_name=None):
     """Create a treemap heatmap of portfolio holdings with price changes and sectors"""
     try:
         if holdings_df.empty or len(holdings_df) < 1:
@@ -52,8 +52,11 @@ def create_heatmap(holdings_df):
         available_tickers = [ticker for ticker in top_holdings['ticker'] if ticker]
         
         if available_tickers:
+            # Create mapping of tickers to company names
+            ticker_to_company = dict(zip(top_holdings['ticker'], top_holdings['NAMEOFISSUER']))
+            
             with st.spinner("Fetching stock price changes and sector data..."):
-                stock_info = get_stock_info_batch(available_tickers)
+                stock_info = get_stock_info_batch(available_tickers, ticker_to_company)
             
             # Add stock information to holdings
             top_holdings['price_change'] = top_holdings['ticker'].apply(
@@ -99,13 +102,18 @@ def create_heatmap(holdings_df):
         treemap_data['portfolio_pct'] = pd.to_numeric(treemap_data['portfolio_pct'], errors='coerce').fillna(0)
         
         # Create treemap with simplified configuration
+        if fund_name:
+            treemap_title = f'Portfolio Holdings by Sector (Top 20) - {fund_name}'
+        else:
+            treemap_title = 'Portfolio Holdings by Sector (Top 20)'
+        
         fig = px.treemap(
             treemap_data,
             path=['sector', 'label'],
             values='portfolio_pct',
             color='color_value',
             color_continuous_scale='RdYlGn',
-            title='Portfolio Holdings by Sector (Top 20)',
+            title=treemap_title,
             hover_data=['VALUE', 'portfolio_pct', 'SSHPRNAMT', 'price_change', 'ticker']
         )
         
@@ -303,8 +311,11 @@ def main():
                     available_tickers = [ticker for ticker in top_holdings_analysis['ticker'] if ticker]
                     
                     if available_tickers:
+                        # Create mapping of tickers to company names for analysis
+                        ticker_to_company_analysis = dict(zip(top_holdings_analysis['ticker'], top_holdings_analysis['NAMEOFISSUER']))
+                        
                         with st.spinner("Analyzing sector distribution and price changes..."):
-                            stock_info = get_stock_info_batch(available_tickers)
+                            stock_info = get_stock_info_batch(available_tickers, ticker_to_company_analysis)
                         
                         # Add stock information
                         top_holdings_analysis['price_change'] = top_holdings_analysis['ticker'].apply(
@@ -352,7 +363,7 @@ def main():
                 st.subheader("🗺️ Portfolio Heatmap by Sector")
                 st.write("Portfolio Holdings Treemap with 1-Month Price Changes (Top 20)")
                 
-                heatmap_fig = create_heatmap(top_holdings)
+                heatmap_fig = create_heatmap(top_holdings, selected_fund)
                 if heatmap_fig:
                     # Use plotly_chart with proper configuration for treemap
                     st.plotly_chart(
